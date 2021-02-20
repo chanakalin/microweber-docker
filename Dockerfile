@@ -35,25 +35,20 @@ RUN unzip -d /microweber -x /microweber.zip
 RUN chown -R nginx:nginx /microweber
 RUN chmod -R 0775 /microweber/storage/ /microweber/userfiles/
 
-#Install microweber
+#microweber installer
 ADD --chown=root:root installMicroweber.sh /installMicroweber.sh
 RUN chmod +x /installMicroweber.sh
-RUN /installMicroweber.sh
 
-#Post installation
-RUN chmod -R 0775 /microweber/storage/database.sqlite
-RUN chown -R nginx:nginx /microweber/storage/database.sqlite
+#Volumes
+VOLUME ["/microweber/storage/","/microweber/userfiles/","/microweber/config"]
 
+#environment vairables
+#ENV adminEmail=admin@example.com
+#ENV adminUsername=admin
+#ENV adminPassword=admin
+#ENV dbEngine=sqlite
 
 #Command on startup
 CMD ["setenforce","0"]
+CMD ["/installMicroweber.sh"]
 CMD ["/sbin/init"]
-
-###########################################################################################################################################################
-#Build
-#docker build -t microweber ./
-#RUN
-#docker run -it --privileged=true --tmpfs /tmp --tmpfs /run -p 0.0.0.0:8080:80 microweber
-#Access bash
-#docker ps
-#docker exec -it <CONTAINER ID> /bin/bash
