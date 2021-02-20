@@ -45,5 +45,8 @@ VOLUME ["/microweber/storage/","/microweber/userfiles/","/microweber/config"]
 #ENV adminPassword=admin
 #ENV dbEngine=sqlite
 
+
 #Command on startup
-CMD ["/installMicroweber.sh","/sbin/init"]
+#CMD ["nginx","-c","/etc/nginx/nginx.conf","-g","daemon off;"]
+#CMD ["/usr/sbin/php-fpm","-y","/etc/php-fpm.conf","--nodaemonize"]
+CMD ["/installMicroweber.sh"]

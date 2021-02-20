@@ -73,5 +73,7 @@ if [ $dbEngine == "sqlite" ];then
 fi
 
 #init
-/sbin/init
-
+/usr/sbin/php-fpm --daemonize -R
+sleep 2
+pidof php-fpm
+nginx -c /etc/nginx/nginx.conf -g 'daemon off;'
