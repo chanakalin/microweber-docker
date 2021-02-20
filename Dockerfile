@@ -21,6 +21,7 @@ ADD --chown=root:root php-fpm.conf /etc/php-fpm.conf
 
 #Service disable
 RUN systemctl disable kdump
+RUN systemctl disable dnf-makecache.timer
 #Service enable
 RUN systemctl enable php-fpm
 RUN systemctl enable nginx
@@ -28,12 +29,8 @@ RUN systemctl enable nginx
 #Download and create microweber installation
 RUN mkdir /microweber
 RUN wget https://microweber.org/download.php -O /microweber.zip
-#Download the latest
-RUN unzip -d /microweber -x /microweber.zip
 #Copy from existing zip
 #ADD --chown=root:root microweber.zip /microweber.zip
-RUN chown -R nginx:nginx /microweber
-RUN chmod -R 0775 /microweber/storage/ /microweber/userfiles/
 
 #microweber installer
 ADD --chown=root:root installMicroweber.sh /installMicroweber.sh
@@ -49,6 +46,4 @@ VOLUME ["/microweber/storage/","/microweber/userfiles/","/microweber/config"]
 #ENV dbEngine=sqlite
 
 #Command on startup
-CMD ["setenforce","0"]
-CMD ["/installMicroweber.sh"]
-CMD ["/sbin/init"]
+CMD ["/installMicroweber.sh","/sbin/init"]

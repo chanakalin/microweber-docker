@@ -16,21 +16,29 @@ do
     esac
 done
 
+#clear
+rm -rfR /microweber/storage/* /microweber/storage/.* /microweber/userfiles/* /microweber/userfiles/.* /microweber/config/* /microweber/config/.*
+
+#extract
+unzip -d /microweber -x /microweber.zip
+chown -R nginx:nginx /microweber
+chmod -R 0775 /microweber/storage/ /microweber/userfiles/
+
 #change dir
-cd /microweber
+cmd="php artisan microweber:install"
 
 case $dbEngine in
     "mysql")
-        cmd="php artisan microweber:install $adminEmail $adminUsername $adminPassword $dbHost $dbName $dbUsername $dbPassword mysql"
+        cmd="$cmd $adminEmail $adminUsername $adminPassword $dbHost $dbName $dbUsername $dbPassword mysql"
         ;;
     
     "pgsql")
-        cmd="php artisan microweber:install $adminEmail $adminUsername $adminPassword $dbHost $dbName $dbUsername $dbPassword pgsql"
+        cmd="$cmd $adminEmail $adminUsername $adminPassword $dbHost $dbName $dbUsername $dbPassword pgsql"
         ;;
         
     "sqlite")
         dbHost="/microweber/storage/database.sqlite"
-        cmd="php artisan microweber:install $adminEmail $adminUsername $adminPassword $dbHost"
+        cmd="$cmd $adminEmail $adminUsername $adminPassword $dbHost"
         ;;
 esac
 
@@ -47,8 +55,15 @@ then
     cmd="$cmd -t $template"
 fi  
 
+#permissions
+chown -R nginx:nginx /microweber/userfiles/
+chmod -R 0775 /microweber/userfiles/
+chown -R nginx:nginx /microweber/config
+
+
 #install
-$cmd
+cd /microweber;
+$cmd;
 echo $cmd
 
 #ownerships if SQLite
@@ -56,4 +71,7 @@ if [ $dbEngine == "sqlite" ];then
     chmod -R 0775 $dbHost
     chown -R nginx:nginx $dbHost
 fi
+
+#init
+/sbin/init
 
