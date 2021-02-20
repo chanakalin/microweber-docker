@@ -5,6 +5,8 @@ FROM centos:centos8.3.2011
 EXPOSE 80
 
 #Package installation
+#Install epel
+RUN dnf -y install epel-release
 #Install remi
 RUN dnf -y install https://rpms.remirepo.net/enterprise/remi-release-8.rpm
 #Switch the PHP version to 7.4
@@ -39,14 +41,8 @@ RUN chmod +x /installMicroweber.sh
 #Volumes
 VOLUME ["/microweber/storage/","/microweber/userfiles/","/microweber/config"]
 
-#environment vairables
-#ENV adminEmail=admin@example.com
-#ENV adminUsername=admin
-#ENV adminPassword=admin
-#ENV dbEngine=sqlite
-
+#supervisor
+ADD --chown=root:root supervisord.conf /etc/supervisord.conf
 
 #Command on startup
-#CMD ["nginx","-c","/etc/nginx/nginx.conf","-g","daemon off;"]
-#CMD ["/usr/sbin/php-fpm","-y","/etc/php-fpm.conf","--nodaemonize"]
 CMD ["/installMicroweber.sh"]
