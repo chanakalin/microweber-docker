@@ -73,4 +73,5 @@ if [ $dbEngine == "sqlite" ];then
 fi
 
 #init
-/usr/bin/supervisord -n
+setenforce 0
+/usr/bin/supervisord -c /etc/supervisord.conf -n

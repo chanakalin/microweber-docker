@@ -12,7 +12,7 @@ RUN dnf -y install https://rpms.remirepo.net/enterprise/remi-release-8.rpm
 #Switch the PHP version to 7.4
 RUN dnf -y module install php:remi-7.4
 #Install PHP, PHP libs and nginx
-RUN dnf -y install php php-mbstring php-xml php-xmlrpc php-bcmath php-fpm php-gd php-imap php-pgsql php-mysqlnd php-mysql nginx wget unzip
+RUN dnf -y install php php-mbstring php-xml php-xmlrpc php-bcmath php-fpm php-gd php-imap php-pgsql php-mysqlnd php-mysql nginx wget unzip supervisor
 
 #Configure nginx
 RUN rm -rf /etc/nginx/nginx.conf
@@ -24,9 +24,8 @@ ADD --chown=root:root php-fpm.conf /etc/php-fpm.conf
 #Service disable
 RUN systemctl disable kdump
 RUN systemctl disable dnf-makecache.timer
-#Service enable
-RUN systemctl enable php-fpm
-RUN systemctl enable nginx
+RUN systemctl disable php-fpm
+RUN systemctl disable nginx
 
 #Download and create microweber installation
 RUN mkdir /microweber
@@ -41,8 +40,10 @@ RUN chmod +x /installMicroweber.sh
 #Volumes
 VOLUME ["/microweber/storage/","/microweber/userfiles/","/microweber/config"]
 
-#supervisor
+#supervisor to manage both nginx and php-fpm
 ADD --chown=root:root supervisord.conf /etc/supervisord.conf
+RUN mkdir -p /run/php-fpm/
+RUN chown -R nginx:nginx /run/php-fpm/
 
 #Command on startup
 CMD ["/installMicroweber.sh"]

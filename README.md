@@ -18,7 +18,9 @@ Following volume mounts have to be provide in order to make persistant files
 | /microweber/config | Microweber configurations |
 | /microweber/userfiles | Microweber user files |
 
+
 Following environment variables has to be provide as "--env" options
+
 | Environment variable | Description | Mandatory or nor |
 | --- | --- | --- |
 | adminEmail | Admin users email | Yes |
@@ -33,10 +35,9 @@ Following environment variables has to be provide as "--env" options
 | template | Microweber template | no |
 
 
-
-
-
 Execute following to create a docker instance
+
 ```bash   
-docker run -it --privileged=true --tmpfs /tmp --tmpfs /run -p 0.0.0.0:8080:80 microweber
+export adminEmail="admin@example.com"; export adminUsername="admin"; export adminPassword="abc@123"; export dbEngine="sqlite";
+docker run -it --privileged=true --tmpfs /tmp --tmpfs /run -p 0.0.0.0:8080:80  -v storage:/microweber/storage -v userfiles:/microweber/userfiles -v config:/microweber/config --env adminEmail --env adminUsername --env adminPassword --env dbEngine microweber
 ```
