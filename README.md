@@ -14,9 +14,7 @@ docker build -t microweber ./
 Following volume mounts have to be provide in order to make persistant files
 | Mounting point | Description |
 | --- | --- |
-| /microweber/storage | Laravel storage ( access logs, access SQLite database etc. ) |
-| /microweber/config | Microweber configurations |
-| /microweber/userfiles | Microweber user files |
+| /microweber/ | Microweber installation |
 
 
 Following environment variables has to be provide as "--env" options
@@ -33,19 +31,30 @@ Following environment variables has to be provide as "--env" options
 | dbName | Database name | Only for pgsql and mysql dbEngines | String |
 | dbTablePrefix | Database table prefix | no | String |
 | template | Microweber template | no | String |
+| fresh | Install a fresh copy or continue with the existing if any | no | Y/N |
+
+
+If there's no any existing installation and fresh=N a fresh installation will be perfromed.
+
+
+Following ports will be using for mysql and pgsql database engines
+| DB Engine | Port |
+| --- | --- |
+| MySQL | 3306 |
+| PostgreSQL | 5432 |
 
 
 Execute following to create a docker instance mounting storage,userfiles and config directories at the same working directory
 
 ```bash   
 export adminEmail="admin@example.com"; export adminUsername="admin"; export adminPassword="abc@123"; export dbEngine="sqlite";
-docker run -it --privileged=true --tmpfs /tmp --tmpfs /run -p 0.0.0.0:80:80  -v $(pwd)/storage:/microweber/storage -v $(pwd)/userfiles:/microweber/userfiles -v $(pwd)/config:/microweber/config --env adminEmail --env adminUsername --env adminPassword --env dbEngine microweber
+docker run -it --privileged=true --tmpfs /tmp --tmpfs /run -p 0.0.0.0:80:80  -v $(pwd)/microweber:/microweber/ --env adminEmail --env adminUsername --env adminPassword --env dbEngine microweber
 ```
 
 ## Docker compose - MySQL ##
 Docker compose can use to create a deploymet consisting both MySQL database and microweber
 
-Execute followinginside of the directory
+Execute following inside of the directory
 ```bash 
 docker-compose -f docker-compose-mysql.yml -p microweber-mysql up -d
 ```

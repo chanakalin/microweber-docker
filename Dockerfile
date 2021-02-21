@@ -33,12 +33,16 @@ RUN wget https://microweber.org/download.php -O /microweber.zip
 #Copy from existing zip
 #ADD --chown=root:root microweber.zip /microweber.zip
 
+#wait
+ADD --chown=root:root wait /wait
+RUN chmod +x /wait
+
 #microweber installer
 ADD --chown=root:root installMicroweber.sh /installMicroweber.sh
 RUN chmod +x /installMicroweber.sh
 
 #Volumes
-VOLUME ["/microweber/storage/","/microweber/userfiles/","/microweber/config"]
+VOLUME ["/microweber/"]
 
 #supervisor to manage both nginx and php-fpm
 ADD --chown=root:root supervisord.conf /etc/supervisord.conf

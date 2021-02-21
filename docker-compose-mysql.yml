@@ -25,9 +25,7 @@ services:
         image: microweber:latest
         container_name: microweber
         volumes:
-            - microweber_storage:/microweber/storage
-            - microweber_config:/microweber/config
-            - microweber_userfiles:/microweber/userfiles
+            - microweber:/microweber/
         restart: unless-stopped
         tty: true
         ports:
@@ -35,6 +33,8 @@ services:
         networks:
             - internal-network
             - external-network
+        depends_on:
+            - "db"
         environment:
             adminEmail: admin@example.com
             adminUsername: admin
@@ -45,6 +45,7 @@ services:
             dbPassword: microweberpassword
             dbName: microweber
             template: new-world
+            fresh: N
 
 #Docker Networks
 networks:
@@ -55,7 +56,5 @@ networks:
 
 volumes:
     db_data: {}
-    microweber_storage: {}
-    microweber_userfiles: {}
-    microweber_config: {}
+    microweber: {}
     

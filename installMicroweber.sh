@@ -17,16 +17,23 @@ do
     esac
 done
 
-#always a fresh install
-export fresh=Y
+#if env file not exist perform a fresh installation
+if [ ${fresh^h} == "N" ];then
+    if [ ! -f "/microweber/.env" ] ;then
+        export fresh="Y"
+    fi
+fi
 
 #extract
-if [ ${fresh^h}=="Y" ];then
+if [ ${fresh^h} == "Y" ];then
+    #clear instalaltion directory
+    rm -rfR /microweber/*
     #overwrite
     unzip -q -o -d /microweber -x /microweber.zip
 else
     #never overwrite
-    unzip -q -n -d /microweber -x /microweber.zip
+    #unzip -q -n -d /microweber -x /microweber.zip
+    echo "Using existing installation"
 fi
 
 #ownership
@@ -39,15 +46,20 @@ chown -R nginx:nginx /microweber/config
 
 
 #install if  fresh
-if [ ${fresh^h}=="Y" ];then
+if [ ${fresh^h} == "Y" ];then
     #change directory
     cd /microweber;
     cmd="php artisan microweber:install"
     case $dbEngine in
         "mysql")
+            #wait for mysql
+            export WAIT_HOSTS=$dbHost:3306
+            /wait
             cmd="$cmd $adminEmail $adminUsername $adminPassword $dbHost $dbName $dbUsername $dbPassword mysql"
             ;;    
         "pgsql")
+            export WAIT_HOSTS=$dbHost:5432
+            /wait
             cmd="$cmd $adminEmail $adminUsername $adminPassword $dbHost $dbName $dbUsername $dbPassword pgsql"
             ;;
         "sqlite")
@@ -74,18 +86,15 @@ if [ ${fresh^h}=="Y" ];then
         chmod -R 0775 $dbHost
         chown -R nginx:nginx $dbHost
     fi
+
+    #ownership
+    chown -R nginx:nginx /microweber
+    chmod -R 0775 /microweber/storage/ /microweber/userfiles/
+    #permissions
+    chown -R nginx:nginx /microweber/userfiles/
+    chmod -R 0775 /microweber/userfiles/
+    chown -R nginx:nginx /microweber/config
 fi
 
-
-#ownership
-chown -R nginx:nginx /microweber
-chmod -R 0775 /microweber/storage/ /microweber/userfiles/
-#permissions
-chown -R nginx:nginx /microweber/userfiles/
-chmod -R 0775 /microweber/userfiles/
-chown -R nginx:nginx /microweber/config
-
-
 #init
-setenforce 0
 /usr/bin/supervisord -c /etc/supervisord.conf -n
