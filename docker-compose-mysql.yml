@@ -1,0 +1,61 @@
+version: '3.3'
+
+services:
+    db:
+        image: mysql:5.7
+        container_name: db
+        volumes:
+            - db_data:/var/lib/mysql
+        restart: unless-stopped
+        tty: true
+        ports:
+            - "3306:3306"
+        networks:
+            - internal-network
+        environment:
+            MYSQL_ROOT_PASSWORD: mysqlroot
+            MYSQL_DATABASE: microweber
+            MYSQL_USER: microweberuser
+            MYSQL_PASSWORD: microweberpassword
+            
+    microweber:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        image: microweber:latest
+        container_name: microweber
+        volumes:
+            - microweber_storage:/microweber/storage
+            - microweber_config:/microweber/config
+            - microweber_userfiles:/microweber/userfiles
+        restart: unless-stopped
+        tty: true
+        ports:
+            - "80:80"
+        networks:
+            - internal-network
+            - external-network
+        environment:
+            adminEmail: admin@example.com
+            adminUsername: admin
+            adminPassword: password
+            dbEngine: mysql
+            dbHost: db
+            dbUsername: microweberuser
+            dbPassword: microweberpassword
+            dbName: microweber
+            template: new-world
+
+#Docker Networks
+networks:
+    internal-network:
+        driver: bridge
+    external-network:
+        driver: bridge
+
+volumes:
+    db_data: {}
+    microweber_storage: {}
+    microweber_userfiles: {}
+    microweber_config: {}
+    

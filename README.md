@@ -39,5 +39,13 @@ Execute following to create a docker instance mounting storage,userfiles and con
 
 ```bash   
 export adminEmail="admin@example.com"; export adminUsername="admin"; export adminPassword="abc@123"; export dbEngine="sqlite";
-docker run -it --privileged=true --tmpfs /tmp --tmpfs /run -p 0.0.0.0:8080:80  -v $(pwd)/storage:/microweber/storage -v $(pwd)/userfiles:/microweber/userfiles -v $(pwd)/config:/microweber/config --env adminEmail --env adminUsername --env adminPassword --env dbEngine microweber
+docker run -it --privileged=true --tmpfs /tmp --tmpfs /run -p 0.0.0.0:80:80  -v $(pwd)/storage:/microweber/storage -v $(pwd)/userfiles:/microweber/userfiles -v $(pwd)/config:/microweber/config --env adminEmail --env adminUsername --env adminPassword --env dbEngine microweber
+```
+
+## Docker compose - MySQL ##
+Docker compose can use to create a deploymet consisting both MySQL database and microweber
+
+Execute followinginside of the directory
+```bash 
+docker-compose -f docker-compose-mysql.yml -p microweber-mysql up -d
 ```
