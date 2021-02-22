@@ -11,8 +11,8 @@ RUN dnf -y install epel-release
 RUN dnf -y install https://rpms.remirepo.net/enterprise/remi-release-8.rpm
 #Switch the PHP version to 7.4
 RUN dnf -y module install php:remi-7.4
-#Install PHP, PHP libs and nginx
-RUN dnf -y install php php-mbstring php-xml php-xmlrpc php-bcmath php-fpm php-gd php-imap php-pgsql php-mysqlnd php-mysql nginx wget unzip supervisor
+#Install PHP, PHP libs, nginx and supervisor
+RUN dnf -y install php php-mbstring php-xml php-xmlrpc php-bcmath php-fpm php-gd php-imap php-pgsql php-mysqlnd php-mysql php-zip php-soap php-json php-mcrypt nginx wget unzip supervisor
 
 #Configure nginx
 RUN rm -rf /etc/nginx/nginx.conf

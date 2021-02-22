@@ -19,7 +19,7 @@ Following volume mounts have to be provide in order to make persistant files
 
 Following environment variables has to be provide as "--env" options
 
-| Environment variable | Description | Mandatory or nor | Acceptable values |
+| Environment variable | Description | Mandatory or not | Acceptable values |
 | --- | --- | --- | --- |
 | adminEmail | Admin users email | Yes | String |
 | adminUsername | Admin username | Yes | String |

@@ -17,6 +17,11 @@ do
     esac
 done
 
+#if fresh is not set perform existing installation
+if [ -v $fresh ];then
+    export fresh="N"
+fi
+
 #if env file not exist perform a fresh installation
 if [ ${fresh^h} == "N" ];then
     if [ ! -f "/microweber/.env" ] ;then
